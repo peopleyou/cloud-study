@@ -1,5 +1,7 @@
 package com.study.cloud;
 
+import com.study.cloud.conf.MybatisDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,9 @@ public class SampleController {
 
 	volatile static int n=0;
 	volatile static int m=0;
+
+    @Autowired
+    private MybatisDataSource mybatisDataSource;
 
 	Executor executor = Executors.newFixedThreadPool(10);
 
@@ -45,14 +50,21 @@ public class SampleController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/user")
-    String user() {
+     @RequestMapping(value = "/user")
+     String user() {
 
-    	System.out.println("user当前线程："+ Thread.currentThread().getName());
-    	System.out.println("user请求数量："+(++m));
+        System.out.println("user当前线程："+ Thread.currentThread().getName());
+        System.out.println("user请求数量："+(++m));
 
-    	System.out.println("user处理完成："+(m));
+        System.out.println("user处理完成："+(m));
         return "Hello User!"+m;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/mybatis-config")
+    String printMybatisConfig() {
+        mybatisDataSource.printDataSourceProperties();
+        return "success";
     }
 
     public static void main(String[] args) throws Exception {
